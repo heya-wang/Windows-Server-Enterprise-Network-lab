@@ -1,4 +1,4 @@
-# windows-server-enterprise-network-lab
+# Enterprise Windows Infrastructure Lab
 
 ## Project Overview
 
@@ -15,195 +15,117 @@ The design focuses on simplicity, scalability, and realism, reflecting how real 
 
 ---
 
+## Network Design
+
+The environment is divided into three subnets:
+
+- VLAN1: 192.168.1.0/24 → Users Network  
+- VLAN2: 192.168.2.0/24 → Servers Network  
+- VLAN3: 192.168.3.0/24 → DMZ Network  
+
+---
+
 ## Architecture Overview
 
-The environment is divided into three network segments:
+---
 
-### Users Network
-- Subnet: 192.168.10.0/24
-- Purpose: End-user devices
+## VLAN1: 192.168.1.0/24 - Users Network
 
-### Servers Network
-- Subnet: 192.168.20.0/24
-- Purpose: Internal infrastructure services
+### Purpose
+End-user devices used for domain login, testing, and daily operations.
 
-### DMZ Network
-- Subnet: 192.168.30.0/24
-- Purpose: Public-facing services (isolated from internal domain)
+| No | Machine     | Role                      | IP Address     |
+|----|-------------|---------------------------|----------------|
+| 1  | CORP-CL01   | Windows 11 Client         | 192.168.1.10   |
+| 2  | CORP-CL02   | Secondary Client (GFN-11) | 192.168.1.11   |
+
+### Configuration Notes
+- DNS: 192.168.2.10 / 192.168.2.11  
+- Gateway: 192.168.1.1  
 
 ---
 
-## Virtual Machines & Roles
+## VLAN2: 192.168.2.0/24 - Servers Network
 
-## Domain Services (Servers Network)
+### Purpose
+Core internal infrastructure services including domain control, file services, and routing.
 
-| Machine | Role | IP Address |
-|--------|------|------------|
-| DC | Primary Domain Controller | 192.168.20.10 |
-| GFN-DC | Secondary Domain Controller | 192.168.20.11 |
+| No | Machine      | Role                        | IP Address     |
+|----|--------------|-----------------------------|----------------|
+| 1  | CORP-DC01    | Primary Domain Controller   | 192.168.2.10   |
+| 2  | CORP-DC02    | Secondary Domain Controller | 192.168.2.11   |
+| 3  | CORP-FS01    | File Server                 | 192.168.2.20   |
+| 4  | CORP-APP01   | Application Server          | 192.168.2.21   |
+| 5  | EDGE-RT01    | Router (RRAS Gateway)       | 192.168.2.1    |
 
-Functions:
-- Active Directory Domain Services
-- DNS
-- User and group management
-- Redundancy and replication
-
----
-
-## Internal Servers (Servers Network)
-
-| Machine | Role | IP Address |
-|--------|------|------------|
-| Server1 | File Server | 192.168.20.20 |
-| Server2 | Application / Management Server | 192.168.20.21 |
-
-Functions:
-- File sharing (SMB)
-- NTFS permissions
-- Internal services and management tools
+### Hosted Services
+- Active Directory Domain Services  
+- DNS  
+- File Sharing (SMB)  
+- Internal applications  
+- Inter-subnet routing  
 
 ---
 
-## Network & Routing
+## VLAN3: 192.168.3.0/24 - DMZ Network
 
-| Machine | Role |
-|--------|------|
-| Server3 | Router (RRAS) |
+### Purpose
+Isolated network for externally facing services.
 
-Interfaces:
-- 192.168.10.1 → Users Network
-- 192.168.20.1 → Servers Network
-- 192.168.30.1 → DMZ Network
+| No | Machine       | Role                      | IP Address     |
+|----|---------------|---------------------------|----------------|
+| 1  | DMZ-WEB01     | Web Server (IIS)          | 192.168.3.10   |
+| 2  | DMZ-WEB02     | Staging Web Server        | 192.168.3.11   |
+| 3  | DMZ-PROXY01   | Reverse Proxy / Gateway    | 192.168.3.12   |
 
-Functions:
-- Inter-subnet routing
-- Traffic segmentation
-- Logical access control
-
----
-
-## DMZ Environment
-
-| Machine | Role | IP Address |
-|--------|------|------------|
-| GFN-Server1 | Web Server (IIS) | 192.168.30.10 |
-| GFN-Server2 | Staging / Test Web Server | 192.168.30.11 |
-| GFN-Server3 | Optional Proxy / Service Host | 192.168.30.12 |
-
-Characteristics:
-- Not joined to domain
-- Isolated from internal servers
-- Simulates external-facing services
+### Security Characteristics
+- Not joined to the domain  
+- No direct access to internal servers  
+- Access controlled via EDGE router only  
 
 ---
 
-## Client Machines (Users Network)
+## Routing Layer - EDGE-RT01
 
-| Machine | Role | IP Address |
-|--------|------|------------|
-| Win11 | Domain-joined client | 192.168.10.10 |
-| GFN-11 | Domain-joined client | 192.168.10.11 |
+### Interfaces
+
+| Interface | Network | IP Address   |
+|----------|--------|--------------|
+| NIC1     | Users  | 192.168.1.1  |
+| NIC2     | Servers| 192.168.2.1  |
+| NIC3     | DMZ    | 192.168.3.1  |
+
+### Responsibilities
+- Inter-subnet routing  
+- Traffic segmentation  
+- Logical access control between network zones  
 
 ---
 
-## Security Design
+## Security Model
 
-The architecture implements basic enterprise security principles:
-
-- Network Segmentation  
-  Users, Servers, and DMZ are isolated
-
-- Domain Isolation  
-  DMZ systems are not part of the Active Directory domain
-
-- Access Control  
-  Users → Servers allowed  
-  Users → DMZ restricted  
-  DMZ → Servers blocked  
-  Servers → DMZ limited access  
+- Users → Servers: Allowed (authenticated domain access)  
+- Users → DMZ: Restricted  
+- DMZ → Servers: Blocked  
+- Servers → DMZ: Controlled access only  
 
 ---
 
 ## Active Directory Design
 
-The environment uses a single domain:  gfn.local
+The environment is based on a single domain:
 
+corp.local
 
-Structure:
-- Users organized by departments (OU-based design)
-- Computer and server separation
-- Centralized authentication and policy management
+Implemented using:
 
-Features:
-- Group Policy Objects (GPO)
-- Centralized user management
-- Domain redundancy (2 Domain Controllers)
+- Centralized authentication and authorization  
+- Organizational Units (OU) structure  
+- Group Policy Objects (GPO)  
+- Two domain controllers for redundancy  
 
 ---
 
-## Network Design Summary
-Users Network Servers Network DMZ Network
-192.168.10.0 192.168.20.0 192.168.30.0
-| | |
-Win11 DC / File / App / Router Web Servers
-GFN-11 (Core Systems) (Isolated)
+## Summary
 
-
----
-
-## Technologies Used
-
-- Hyper-V (Virtualization)
-- Windows Server
-- Active Directory Domain Services
-- DNS / DHCP
-- RRAS (Routing)
-- IIS (Web Server)
-- Windows 11 Clients
-
----
-
-## Project Goals
-
-- Simulate a real SMB IT infrastructure
-- Practice Windows Server administration
-- Understand network segmentation
-- Learn Active Directory architecture
-- Build a portfolio-ready IT lab environment
-
----
-
-## Screenshots (To Be Added)
-
-- Network topology diagram
-- Active Directory structure
-- Domain join process
-- GPO configuration
-- DMZ isolation tests
-- Ping / routing validation
-
----
-
-## Future Improvements
-
-- PowerShell automation for user creation
-- Group Policy hardening templates
-- Firewall rule simulation
-- Backup & recovery strategy
-- Monitoring system (optional)
-
----
-
-## Key Learning Outcomes
-
-- Enterprise network design basics
-- Active Directory architecture
-- Role-based server deployment
-- Network isolation (DMZ concept)
-- Virtualized infrastructure management
-
----
-
-## Author
-
-Project built as a hands-on IT infrastructure lab for system administration practice and job preparation.
+This project demonstrates a realistic enterprise-style IT infrastructure with proper network segmentation, centralized identity management, and isolated service deployment. It simulates a small-to-medium enterprise environment and provides hands-on experience with Windows Server administration, Active Directory, and network architecture design.
