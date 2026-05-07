@@ -19,44 +19,29 @@ The design focuses on simplicity, scalability, and realism, reflecting how real 
 
 The environment is divided into three subnets:
 
-- VLAN1: 192.168.1.0/24 → Users Network  
-- VLAN2: 192.168.2.0/24 → Servers Network  
+- VLAN1: 192.168.1.0/24 → Servers Network  
+- VLAN2: 192.168.2.0/24 → Users Network  
 - VLAN3: 192.168.3.0/24 → DMZ Network  
 
 ---
 
 ## Architecture Overview
+<img width="1030" height="810" alt="image" src="https://github.com/user-attachments/assets/b8d1f6e6-5db9-4ce5-a815-67754fbf84a7" />
 
 ---
 
-## VLAN1: 192.168.1.0/24 - Users Network
-
-### Purpose
-End-user devices used for domain login, testing, and daily operations.
-
-| No | Machine     | Role                      | IP Address     |
-|----|-------------|---------------------------|----------------|
-| 1  | CORP-CL01   | Windows 11 Client         | 192.168.1.10   |
-| 2  | CORP-CL02   | Secondary Client (GFN-11) | 192.168.1.11   |
-
-### Configuration Notes
-- DNS: 192.168.2.10 / 192.168.2.11  
-- Gateway: 192.168.1.1  
-
----
-
-## VLAN2: 192.168.2.0/24 - Servers Network
+## VLAN1: 192.168.1.0/24 - Servers Network
 
 ### Purpose
 Core internal infrastructure services including domain control, file services, and routing.
 
 | No | Machine      | Role                        | IP Address     |
 |----|--------------|-----------------------------|----------------|
-| 1  | CORP-DC01    | Primary Domain Controller   | 192.168.2.10   |
-| 2  | CORP-DC02    | Secondary Domain Controller | 192.168.2.11   |
-| 3  | CORP-FS01    | File Server                 | 192.168.2.20   |
-| 4  | CORP-APP01   | Application Server          | 192.168.2.21   |
-| 5  | EDGE-RT01    | Router (RRAS Gateway)       | 192.168.2.1    |
+| 1  | DC1    | Primary Domain Controller   | 192.168.1.200   |
+| 2  | DC2    | Secondary Domain Controller | 192.168.1.201   |
+| 3  | Server1    | File Server                 | 192.168.1.1   |
+| 4  | Server2   | Application Server          | 192.168.1.2   |
+| 5  | Server3   | Router (RRAS Gateway)       | 192.168.1.3    |
 
 ### Hosted Services
 - Active Directory Domain Services  
@@ -64,6 +49,22 @@ Core internal infrastructure services including domain control, file services, a
 - File Sharing (SMB)  
 - Internal applications  
 - Inter-subnet routing  
+
+---
+
+## VLAN2: 192.168.2.0/24 - Users Network
+
+### Purpose
+End-user devices used for domain login, testing, and daily operations.
+
+| No | Machine     | Role                      | IP Address     |
+|----|-------------|---------------------------|----------------|
+| 1  | CL1   | Windows 11 Client         | 192.168.2.10   |
+| 2  | CL2   | Secondary Client  | 192.168.2.11   |
+
+### Configuration Notes
+- DNS: 192.168.2.10 / 192.168.2.11  
+- Gateway: 192.168.1.1  
 
 ---
 
@@ -75,7 +76,7 @@ Isolated network for externally facing services.
 | No | Machine       | Role                      | IP Address     |
 |----|---------------|---------------------------|----------------|
 | 1  | DMZ-WEB01     | Web Server (IIS)          | 192.168.3.10   |
-| 2  | DMZ-WEB02     | Staging Web Server        | 192.168.3.11   |
+| 2  | DMZ-WEB02     | Staging Web Server        | 192.168.3.20   |
 | 3  | DMZ-PROXY01   | Reverse Proxy / Gateway    | 192.168.3.12   |
 
 ### Security Characteristics
@@ -91,9 +92,9 @@ Isolated network for externally facing services.
 
 | Interface | Network | IP Address   |
 |----------|--------|--------------|
-| NIC1     | Users  | 192.168.1.1  |
-| NIC2     | Servers| 192.168.2.1  |
-| NIC3     | DMZ    | 192.168.3.1  |
+| NIC1     | Servers  | 192.168.1.254  |
+| NIC2     | Users | 192.168.2.254  |
+| NIC3     | DMZ    | 192.168.3.254  |
 
 ### Responsibilities
 - Inter-subnet routing  
