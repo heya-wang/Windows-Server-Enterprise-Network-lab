@@ -29,7 +29,7 @@ Create 3 isolated virtual switches for the lab network:
 
 ---
 
-## Virtual Machines Overview
+## 3. Common VM Configuration
 
 The following virtual machines will be created:
 
@@ -56,3 +56,6 @@ Common settings:
 - RAM:
   - Servers: 2 GB
   - Windows 11: 4 GB
+- For both Windows 11 clients (`CL1`, `CL2`):
+  - Enable `TPM`
+  - Configure `2 virtual processors`
