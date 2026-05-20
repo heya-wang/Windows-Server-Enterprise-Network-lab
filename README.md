@@ -1,132 +1,232 @@
 # Enterprise Windows Infrastructure Lab
 
-## Project Overview
+## Projektübersicht
 
-This project simulates a small-to-medium enterprise IT infrastructure using a virtualized environment built on Hyper-V.  
-The goal is to practice and demonstrate real-world skills in:
+Dieses Projekt simuliert eine kleine bis mittelgroße Unternehmensinfrastruktur innerhalb einer virtualisierten Hyper-V Umgebung.  
+Der Fokus liegt auf einer realistischen Netzwerkstruktur, zentralisierten Windows-Diensten sowie grundlegenden Sicherheits- und Infrastrukturkonzepten.
 
-- Active Directory administration
-- Network segmentation and routing
-- Server role design
-- Security isolation (DMZ)
-- Basic infrastructure operations
+Ziel des Projekts ist es, praktische Erfahrungen in folgenden Bereichen zu sammeln:
 
-The design focuses on simplicity, scalability, and realism, reflecting how real SMB environments are structured.
-
----
-
-## Network Design
-
-The environment is divided into three subnets:
-
-- VLAN1: 192.168.1.0/24 → Servers Network  
-- VLAN2: 192.168.2.0/24 → Users Network  
-- VLAN3: 192.168.3.0/24 → DMZ Network  
+- Active Directory Administration
+- Netzwerksegmentierung
+- Routing und Zugriffskontrolle
+- VPN-Integration
+- DMZ-Design
+- Infrastruktur-Monitoring
+- Windows Server Verwaltung
 
 ---
 
-## Architecture Overview
-<img width="1030" height="810" alt="image" src="https://github.com/user-attachments/assets/b8d1f6e6-5db9-4ce5-a815-67754fbf84a7" />
+# Netzwerkdesign
+
+Die Infrastruktur ist in mehrere logisch getrennte Netzwerkbereiche aufgeteilt.
+
+| Netzwerk | Subnetz | Zweck |
+|---|---|---|
+| Servernetz | 172.16.1.0/24 | Interne Infrastruktur und zentrale Dienste |
+| DMZ | 172.16.10.0/24 | Öffentlich erreichbare Dienste |
+| Benutzernetz | 172.16.20.0/24 | Client- und Arbeitsplatzsysteme |
+| VPN-Netz | 172.16.30.0/24 | Remote Access für externe Benutzer |
 
 ---
 
-## VLAN1: 192.168.1.0/24 - Servers Network
+# Architekturübersicht
 
-### Purpose
-Core internal infrastructure services including domain control, file services, and routing.
+<img width="876" height="775" alt="image" src="https://github.com/user-attachments/assets/e7ebb577-5f0c-4266-bc7f-1d9fa593a8e0" />
 
-| No | Machine      | Role                        | IP Address     |
-|----|--------------|-----------------------------|----------------|
-| 1  | DC1    | Primary Domain Controller   | 192.168.1.200   |
-| 2  | DC2    | Secondary Domain Controller | 192.168.1.201   |
-| 3  | Server1    | File Server                 | 192.168.1.1   |
-| 4  | Server2   | Application Server          | 192.168.1.2   |
-| 5  | Server3   | Router (RRAS Gateway)       | 192.168.1.3    |
 
-### Hosted Services
-- Active Directory Domain Services  
-- DNS  
-- File Sharing (SMB)  
-- Internal applications  
-- Inter-subnet routing  
+Die gesamte Kommunikation zwischen den Netzwerken erfolgt über einen zentralen virtuellen Router, welcher Routing, ACL-Regeln sowie VPN-Zugriffe verwaltet.
 
 ---
 
-## VLAN2: 192.168.2.0/24 - Users Network
+# Servernetz – 172.16.1.0/24
 
-### Purpose
-End-user devices used for domain login, testing, and daily operations.
+## Zweck
 
-| No | Machine     | Role                      | IP Address     |
-|----|-------------|---------------------------|----------------|
-| 1  | CL1   | Windows 11 Client         | 192.168.2.10   |
-| 2  | CL2   | Secondary Client  | 192.168.2.11   |
+Das Servernetz enthält die zentrale Unternehmensinfrastruktur sowie interne Verwaltungs- und Netzwerkdienste.
 
-### Configuration Notes
-- DNS: 192.168.2.10 / 192.168.2.11  
-- Gateway: 192.168.1.1  
+## Systeme
 
----
+| Hostname | Rolle | IP-Adresse |
+|---|---|---|
+| DC1 | Primary Domain Controller | 172.16.1.10 |
+| DC2 | Secondary Domain Controller | 172.16.1.11 |
+| Fileserver | SMB File Server | 172.16.1.12 |
+| DHCPServer | DHCP Service | 172.16.1.13 |
+| Zabbix | Monitoring Server | 172.16.1.14 |
 
-## VLAN3: 192.168.3.0/24 - DMZ Network
+## Dienste
 
-### Purpose
-Isolated network for externally facing services.
-
-| No | Machine       | Role                      | IP Address     |
-|----|---------------|---------------------------|----------------|
-| 1  | DMZ-WEB01     | Web Server (IIS)          | 192.168.3.10   |
-| 2  | DMZ-WEB02     | Staging Web Server        | 192.168.3.20   |
-| 3  | DMZ-PROXY01   | Reverse Proxy / Gateway    | 192.168.3.12   |
-
-### Security Characteristics
-- Not joined to the domain  
-- No direct access to internal servers  
-- Access controlled via EDGE router only  
+- Active Directory
+- DNS
+- DHCP
+- SMB-Freigaben
+- Infrastruktur-Monitoring
 
 ---
 
-## Routing Layer - EDGE-RT01
+# Benutzernetz – 172.16.20.0/24
 
-### Interfaces
+## Zweck
 
-| Interface | Network | IP Address   |
-|----------|--------|--------------|
-| NIC1     | Servers  | 192.168.1.254  |
-| NIC2     | Users | 192.168.2.254  |
-| NIC3     | DMZ    | 192.168.3.254  |
+Das Benutzernetz simuliert Arbeitsplatzrechner innerhalb der Unternehmensdomäne.
 
-### Responsibilities
-- Inter-subnet routing  
-- Traffic segmentation  
-- Logical access control between network zones  
+## Systeme
 
----
+| Hostname | Rolle | IP-Adresse |
+|---|---|---|
+| CL1 | Windows Client | 172.16.20.10 |
+| CL2 | Windows Client | 172.16.20.11 |
 
-## Security Model
+## Funktionen
 
-- Users → Servers: Allowed (authenticated domain access)  
-- Users → DMZ: Restricted  
-- DMZ → Servers: Blocked  
-- Servers → DMZ: Controlled access only  
+- Anmeldung an der Active Directory Domäne
+- Zugriff auf interne Ressourcen
+- Testumgebung für GPOs und Benutzerverwaltung
 
 ---
 
-## Active Directory Design
+# DMZ – 172.16.10.0/24
 
-The environment is based on a single domain:
+## Zweck
 
-corp.local
+Die DMZ enthält Dienste, die potenziell aus externen Netzwerken erreichbar sind.
 
-Implemented using:
+## Systeme
 
-- Centralized authentication and authorization  
-- Organizational Units (OU) structure  
-- Group Policy Objects (GPO)  
-- Two domain controllers for redundancy  
+| Hostname | Rolle | IP-Adresse |
+|---|---|---|
+| Webserver | IIS Webserver | 172.16.10.10 |
+| Proxy | Reverse Proxy | 172.16.10.11 |
+
+## Sicherheitskonzept
+
+- Getrenntes Netzwerksegment
+- Eingeschränkter Zugriff auf interne Systeme
+- Zugriffskontrolle über ACL-Regeln
 
 ---
 
-## Summary
+# VPN-Netz – 172.16.30.0/24
 
-This project demonstrates a realistic enterprise-style IT infrastructure with proper network segmentation, centralized identity management, and isolated service deployment. It simulates a small-to-medium enterprise environment and provides hands-on experience with Windows Server administration, Active Directory, and network architecture design.
+## Zweck
+
+Das VPN-Netz ermöglicht sicheren Remote-Zugriff auf interne Netzwerkressourcen.
+
+## Konfiguration
+
+| Funktion | Details |
+|---|---|
+| VPN-Typ | Remote Access VPN |
+| Adresspool | 172.16.30.100 – 172.16.30.200 |
+| Zugriffspunkt | vRouter |
+
+## Besonderheiten
+
+- Logisches Netzwerk ohne eigenes physisches Interface
+- Zugriff erfolgt über das externe Router-Interface
+- Kommunikation wird über ACL-Regeln kontrolliert
+
+---
+
+# Routing und Netzwerksteuerung
+
+## vRouter
+
+Der zentrale virtuelle Router verbindet sämtliche Netzwerksegmente miteinander.
+
+## Aufgaben
+
+- Routing zwischen den Subnetzen
+- ACL-basierte Zugriffskontrolle
+- Verwaltung der VPN-Verbindungen
+- Netzwerksegmentierung
+
+## Gateway-Adressen
+
+| Netzwerk | Gateway |
+|---|---|
+| Servernetz | 172.16.1.1 |
+| DMZ | 172.16.10.1 |
+| Benutzernetz | 172.16.20.1 |
+
+---
+
+# Sicherheitskonzept
+
+Die Infrastruktur orientiert sich an grundlegenden Sicherheitsprinzipien moderner Unternehmensnetzwerke.
+
+- Netzwerksegmentierung
+- ACL-Regeln
+- Trennung interner und externer Dienste
+- Redundante Domain Controller
+
+---
+
+# Active Directory
+
+Die Umgebung basiert auf einer zentralen Windows-Domäne:
+
+```text
+firma.intern
+```
+
+Implementierte Funktionen:
+
+- Benutzer- und Gruppenverwaltung
+- Gruppenrichtlinien (GPO)
+- DNS-Integration
+- Redundante Domain Controller
+
+---
+
+# Monitoring
+
+Ein zentraler Monitoring-Server ist als zukünftige Erweiterung vorgesehen.
+
+Geplante Funktionen:
+
+- Überwachung der Serververfügbarkeit
+- Netzwerkstatus
+- Systemressourcen
+- Dienstüberwachung
+
+---
+
+# Verwendete Technologien
+
+| Bereich | Technologie |
+|---|---|
+| Virtualisierung | Hyper-V |
+| Betriebssysteme | Windows Server / Windows 11 |
+| Verzeichnisdienst | Active Directory |
+| DNS | Windows DNS |
+| DHCP | Windows DHCP |
+| Monitoring | Zabbix |
+| Webserver | IIS |
+| VPN | OpenVPN / WireGuard |
+| Routing | RRAS / Virtueller Router |
+
+---
+
+# Geplante Erweiterungen
+
+- VLAN-Segmentierung
+- Erweiterte Firewall-Regeln
+- Proxy-Konfiguration
+- Zentralisiertes Logging
+- PowerShell-Automatisierung
+
+---
+
+# Zusammenfassung
+
+Dieses Projekt demonstriert eine realitätsnahe Unternehmensinfrastruktur mit Netzwerksegmentierung, zentralem Identitätsmanagement, VPN-Zugriff sowie isolierten Netzwerkzonen.
+
+Der Aufbau orientiert sich an typischen SMB-Umgebungen und dient als praktische Lern- und Demonstrationsumgebung für:
+
+- Windows Server Administration
+- Netzwerkdesign
+- Active Directory
+- Infrastrukturmanagement
+- Grundlegende IT-Sicherheit
