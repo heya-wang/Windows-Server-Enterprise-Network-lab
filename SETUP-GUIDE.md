@@ -1,61 +1,140 @@
-# Hyper-V Virtual Machine Installation 
-
+# Hyper-V Installation und VM-Konfiguration
 
 ## 1. Hyper-V Installation
 
-- Open **Server Manager → Add Roles and Features**
-- Select **Role-based or feature-based installation**
-- Choose target server
-- Select **Hyper-V role**
-- Accept required features
-- Configure:
-  - Virtual Switch: select network adapter
-  - Default storage path: `C:\VM`
-- Enable **automatic restart if required**
-- Click **Install**
-- Wait for installation and server reboot
-- Log in again as Administrator to complete setup
+- Öffnen Sie den **Server-Manager → Rollen und Features hinzufügen**
+- Wählen Sie:
+  - **Rollenbasierte oder featurebasierte Installation**
+- Zielserver auswählen
+- Rolle **Hyper-V** aktivieren
+- Benötigte Features bestätigen
+- Konfiguration durchführen:
+  - Virtueller Switch: entsprechenden Netzwerkadapter auswählen
+  - Standardpfad für virtuelle Maschinen:
+    ```text
+    C:\VM
+    ```
+- Option **Automatischen Neustart bei Bedarf durchführen** aktivieren
+- Installation starten
+- Nach Abschluss den Server neu starten
+- Anschließend erneut als Administrator anmelden
 
+---
+
+# 2. Virtuelle Switches
+
+Für die Laborumgebung werden mehrere virtuelle Netzwerke erstellt:
+
+| Virtueller Switch | Typ | Zweck |
+|---|---|---|
+| `Extern` | External | WAN / Internetzugang |
+| `Privat-Servers` | Private | Servernetz |
+| `Privat-Users` | Private | Benutzernetz |
+| `Privat-DMZ` | Private | DMZ-Netzwerk |
+
+---
+
+# 3. Erstellung der virtuellen Maschinen
+
+Folgende virtuelle Maschinen werden erstellt:
+
+| VM-Name | Rolle |
+|---|---|
+| DC1 | Primärer Domain Controller |
+| DC2 | Sekundärer Domain Controller |
+| Fileserver | SMB-Dateiserver |
+| DHCPServer | DHCP-Server |
+| Zabbix | Monitoring-Server |
+| Webserver | IIS-Webserver |
+| Proxy | Reverse Proxy |
+| CL1 | Windows 11 Client |
+| CL2 | Windows 11 Client |
+
+---
+
+# 4. Gemeinsame VM-Konfiguration
+
+## Generation
+
+Alle virtuellen Maschinen verwenden:
+
+```text
+Generation 2
+```
+
+---
+
+## Betriebssysteme
+
+| Systemtyp | ISO-Datei |
+|---|---|
+| Windows Server | `Windows_Server_2022_German.iso` |
+| Windows 11 | `Win11_German_22h2.iso` |
+
+---
+
+## Virtuelle Festplatten
+
+| Systemtyp | Festplattengröße |
+|---|---|
+| Windows Server | 40 GB |
+| Windows 11 Clients | 64 GB |
+
+Dynamischer Arbeitsspeicher wird für Clients verwendet.
   
 ---
 
-## 2. Virtual Switches 
+## Netzwerkzuordnung
 
-Create 3 isolated virtual switches for the lab network:
-
-- Users Network → `Privat-Users`
-- Servers Network → `Privat-Servers`
-- DMZ Network → `Privat-DMZ`
+| VM | Netzwerk |
+|---|---|
+| DC1 | `Privat-Servers` |
+| DC2 | `Privat-Servers` |
+| Fileserver | `Privat-Servers` |
+| DHCPServer | `Privat-Servers` |
+| Zabbix | `Privat-Servers` |
+| Webserver | `Privat-DMZ` |
+| Proxy | `Privat-DMZ` |
+| CL1 | `Privat-Users` |
+| CL2 | `Privat-Users` |
 
 ---
 
-## 3. Common VM Configuration
+## Arbeitsspeicher (RAM)
 
-The following virtual machines will be created:
+| Systemtyp | RAM |
+|---|---|
+| Windows Server | 2 GB |
+| Windows 11 Clients | 4 GB |
 
-- DC1 (Domain Controller)
-- DC2 (Domain Controller backup) 
-- Server1
-- Server2
-- Server3
-- Server4
-- Server5
-- CL1 (Windows 11 Client)
-- CL2 (Windows 11 Client)
+---
 
-Common settings:
+## CPU-Konfiguration
 
-- Generation 2
-- OS 
-  - Servers: Windows_Server_2022_German.iso
-  - Windows 11: Win11_German_22h2.iso
-- Network:
-  - DC1, DC2, Server1, Server2, Server3: `Privat-Servers`
-  - CL1, CL2: `Privat-Users`
-  - Server5, Server6: `Privat-DMZ`
-- RAM:
-  - Servers: 2 GB
-  - Windows 11: 4 GB
-- For both Windows 11 clients (`CL1`, `CL2`):
-  - Enable `TPM`
-  - Configure `2 virtual processors`
+Für alle Windows 11 Clients:
+
+- `2 virtuelle Prozessoren`
+
+---
+
+## TPM-Konfiguration
+
+Für die Windows 11 Clients (`CL1`, `CL2`):
+
+- TPM aktivieren
+- Secure Boot aktiviert lassen
+
+---
+
+# 5. Hinweise
+
+- Alle Server erhalten statische IP-Adressen
+- Die Clients beziehen ihre IP-Konfiguration über DHCP
+- Gateways werden manuell konfiguriert
+- Die Domain wird später als:
+  
+```text
+firma.intern
+```
+
+eingerichtet.
