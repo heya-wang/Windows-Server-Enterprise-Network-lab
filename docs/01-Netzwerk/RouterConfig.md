@@ -157,14 +157,27 @@ Optional:
 
 ---
 
-# Routing-Funktion
+# NAT-Konfiguration
 
-Der Router ermöglicht die Kommunikation zwischen:
+Für den Internetzugriff der internen Netzwerke wird NAT auf der WAN-Schnittstelle aktiviert.
 
-- Servernetz
-- Benutzernetz
-- DMZ
-- VPN-Netz
+Pfad:
+
+```text
+RRAS
+→ IPv4
+→ NAT
+```
+
+Die Extern-Schnittstelle wird als:
+
+```text
+Öffentliche Schnittstelle mit aktiviertem NAT
+```
+
+konfiguriert.
+
+Die internen Netzwerke (LAN, DMZ und VPN) verwenden den ROUTER anschließend als Gateway für externe Verbindungen.
 
 Die Netzwerke sind logisch voneinander getrennt und kommunizieren ausschließlich über den zentralen Router.
 
@@ -199,9 +212,7 @@ Der Router übernimmt:
 
 Weitere Funktionen wie:
 
-- NAT
 - ACL-Regeln
 - VPN
-- Firewalling
 
 werden später ergänzt.
