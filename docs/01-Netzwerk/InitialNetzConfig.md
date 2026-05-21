@@ -12,7 +12,6 @@ Die folgende Grundkonfiguration wird auf allen virtuellen Maschinen durchgeführ
 | Secondary Domain Controller | `DC2` | `172.16.1.11/24` | `172.16.1.1` | `172.16.1.10` |
 | File Server | `Fileserver` | `172.16.1.12/24` | `172.16.1.1` | `172.16.1.10` |
 | DHCP Server | `DHCPServer` | `172.16.1.13/24` | `172.16.1.1` | `172.16.1.10` |
-| Monitoring Server (geplant) | `Zabbix` | `172.16.1.14/24` | `172.16.1.1` | `172.16.1.10` |
 
 ---
 
