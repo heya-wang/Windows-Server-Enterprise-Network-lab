@@ -1,6 +1,6 @@
 # Active Directory Konfiguration
 
-## Zweck
+## Ziel
 
 Diese Konfiguration beschreibt die Einrichtung der Active Directory Domäne innerhalb der Server-Infrastruktur.
 
@@ -100,7 +100,7 @@ Der Server wird anschließend automatisch neu gestartet.
 
 Die erfolgreiche AD-Installation wird anhand folgender Punkte überprüft:
 
-- Anmeldung an der Domäne möglich
+- Anmeldung an der Domäne möglich (mit "firma\Administrator" und Kennwort)
 - Active Directory Benutzer und Computer verfügbar
 - Domänencontroller erreichbar
 
