@@ -18,9 +18,18 @@ Der Router übernimmt folgende Aufgaben:
 
 Der Router besitzt mehrere virtuelle Netzwerkadapter.
 
+## WAN Interface (Extern)
+
+Das WAN-Interface verbindet den Router mit dem externen Netzwerk der virtuellen Umgebung.
+
+- IP-Konfiguration: DHCP
+- Zugewiesene IP-Adresse: **10.100.20.22**
+- Zweck: Externe Kommunikation / Internet-Verbindung
+
+## Interne Interfaces
+
 | Interface | Netzwerk | IP-Adresse |
 |---|---|---|
-| WAN | Externes Netzwerk / Internet | DHCP / extern |
 | LAN-Server | 172.16.1.0/24 | 172.16.1.1 |
 | LAN-DMZ | 172.16.10.0/24 | 172.16.10.1 |
 | LAN-Clients | 172.16.20.0/24 | 172.16.20.1 |
