@@ -13,7 +13,7 @@ Ziel des Projekts ist es, praktische Erfahrungen in folgenden Bereichen zu samme
 - VPN-Integration
 - DMZ-Design
 - Infrastruktur-Monitoring
-- Windows Server Verwaltung
+- Zentrale Windows Server Verwaltung
 
 ---
 
@@ -32,7 +32,7 @@ Die Infrastruktur ist in mehrere logisch getrennte Netzwerkbereiche aufgeteilt.
 
 # Architekturübersicht
 
-<img width="876" height="775" alt="image" src="https://github.com/user-attachments/assets/e7ebb577-5f0c-4266-bc7f-1d9fa593a8e0" />
+<img width="873" height="688" alt="image" src="https://github.com/user-attachments/assets/3a11e085-f9a0-4b97-95a3-1aa24dbcdcf5" />
 
 
 Die gesamte Kommunikation zwischen den Netzwerken erfolgt über einen zentralen virtuellen Router, welcher Routing, ACL-Regeln sowie VPN-Zugriffe verwaltet.
@@ -51,9 +51,8 @@ Das Servernetz enthält die zentrale Unternehmensinfrastruktur sowie interne Ver
 |---|---|---|
 | DC1 | Primary Domain Controller | 172.16.1.10 |
 | DC2 | Secondary Domain Controller | 172.16.1.11 |
-| Fileserver | SMB File Server | 172.16.1.12 |
+| Fileserver | Datei- und Verwaltungsserver | 172.16.1.12 |
 | DHCPServer | DHCP Service | 172.16.1.13 |
-| Zabbix | Monitoring Server | 172.16.1.14 |
 
 ## Dienste
 
@@ -61,7 +60,7 @@ Das Servernetz enthält die zentrale Unternehmensinfrastruktur sowie interne Ver
 - DNS
 - DHCP
 - SMB-Freigaben
-- Infrastruktur-Monitoring
+- Windows Admin Center (WAC)
 
 ---
 
@@ -180,19 +179,6 @@ Implementierte Funktionen:
 
 ---
 
-# Monitoring
-
-Ein zentraler Monitoring-Server ist als zukünftige Erweiterung vorgesehen.
-
-Geplante Funktionen:
-
-- Überwachung der Serververfügbarkeit
-- Netzwerkstatus
-- Systemressourcen
-- Dienstüberwachung
-
----
-
 # Verwendete Technologien
 
 | Bereich | Technologie |
@@ -202,7 +188,6 @@ Geplante Funktionen:
 | Verzeichnisdienst | Active Directory |
 | DNS | Windows DNS |
 | DHCP | Windows DHCP |
-| Monitoring | Zabbix |
 | Webserver | IIS |
 | VPN | OpenVPN / WireGuard |
 | Routing | RRAS / Virtueller Router |
@@ -212,7 +197,7 @@ Geplante Funktionen:
 # Geplante Erweiterungen
 
 - VLAN-Segmentierung
-- Erweiterte Firewall-Regeln
+- Erweiterte Firewall-Regeln in DMZ Zone
 - Proxy-Konfiguration
 - Zentralisiertes Logging
 - PowerShell-Automatisierung
@@ -226,7 +211,7 @@ Dieses Projekt demonstriert eine realitätsnahe Unternehmensinfrastruktur mit Ne
 Der Aufbau orientiert sich an typischen SMB-Umgebungen und dient als praktische Lern- und Demonstrationsumgebung für:
 
 - Windows Server Administration
-- Netzwerkdesign
-- Active Directory
-- Infrastrukturmanagement
+- Netzwerkdesign und Segmentierung
+- Active Directory Management
+- Zentrale Systemverwaltung mit Windows Admin Center (WAC)
 - Grundlegende IT-Sicherheit
