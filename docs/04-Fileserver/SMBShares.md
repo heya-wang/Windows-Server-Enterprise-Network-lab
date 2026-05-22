@@ -92,14 +92,6 @@ Freigaben:
 
 # Validierung
 
-Zur Validierung werden folgende Tests durchgeführt:
+<img width="580" height="325" alt="image" src="https://github.com/user-attachments/assets/b2eca8b1-8634-4409-8e65-877d42b600f4" />
 
-- Kontrolle der Ordnerstruktur auf Laufwerk `E:`
-- Überprüfung der SMB-Freigaben mittels:
-
-```powershell
-Get-SmbShare
-```
-
-- Testzugriff von einem Domänenclient
-- Überprüfung der Netzwerkerreichbarkeit des Fileservers
+<img width="636" height="541" alt="image" src="https://github.com/user-attachments/assets/ff8b458e-8d9a-41b5-9af7-bcafc0595476" />
