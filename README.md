@@ -96,7 +96,6 @@ Die DMZ enthält Dienste, die potenziell aus externen Netzwerken erreichbar sind
 | Hostname | Rolle | IP-Adresse |
 |---|---|---|
 | Webserver | IIS Webserver | 172.16.10.10 |
-| Proxy | Reverse Proxy | 172.16.10.11 |
 
 ## Sicherheitskonzept
 
@@ -199,7 +198,7 @@ Implementierte Funktionen:
 - VLAN-Segmentierung
 - Erweiterte Firewall-Regeln in DMZ Zone
 - Proxy-Konfiguration
-- Zentralisiertes Logging
+- Windows Admin Center (WAC) Verwaltung auf Fileserver
 - PowerShell-Automatisierung
 
 ---
@@ -215,3 +214,5 @@ Der Aufbau orientiert sich an typischen SMB-Umgebungen und dient als praktische 
 - Active Directory Management
 - Zentrale Systemverwaltung mit Windows Admin Center (WAC)
 - Grundlegende IT-Sicherheit
+
+- Projekt befindet sich in aktiver Weiterentwicklung (nicht produktionsreif)
