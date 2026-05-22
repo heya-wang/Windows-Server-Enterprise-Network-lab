@@ -27,7 +27,7 @@ New-Item -Path "C:\inetpub\wwwroot\firma" -ItemType Directory -Force
 "@ | Out-File "C:\inetpub\wwwroot\firma\index.html" -Encoding UTF8
 ```
 
-# 3. IIS Website erstellen
+# 2. IIS Website erstellen
 
 Pfad:
 
@@ -44,16 +44,18 @@ Rechtsklick auf „Sites“
 
 Einstellungen:
 
-Site-Name: Firmenportal
-Physischer Pfad: C:\inetpub\wwwroot\firma
-Typ: http
-IP-Adresse: Alle nicht zugewiesen
-Port: 80
-Hostname: www.firma.intern
+| Einstellung | Wert |
+| --- | --- |
+| Site-Name | Firmenportal |
+| Physischer Pfad | C:\inetpub\wwwroot\firma |
+| Typ | http |
+| IP-Adresse | Alle nicht zugewiesen |
+| Port | 80 |
+| Hostname | www.firma.intern |
 
 ---
 
-# 4. Standard Website deaktivieren
+# 3. Standard Website deaktivieren
 
 Pfad:
 
@@ -65,13 +67,13 @@ Server-Manager
 ```
 Konfiguration:
 
-„Default Web Site“ auswählen
-Rechtsklick
+„Default Web Site“ auswählen  
+Rechtsklick  
 „Stoppen“ auswählen
 
 ---
 
-# 5. IP Binding hinzufügen
+# 4. IP Binding hinzufügen
 
 Pfad:
 
@@ -83,21 +85,40 @@ IIS-Manager
 ```
 Konfiguration:
 
-| Einstellung | Wert                  |
-| ----------- | --------------------- |
-| Typ         | http                  |
-| IP-Adresse  | Alle nicht zugewiesen |
-| Port        | 80                    |
-| Hostname    | leer lassen           |
+| Einstellung | Wert |
+| --- | --- |
+| IP-Adresse | Alle nicht zugewiesen |
+| Port | 80 |
+| Hostname | www.firma.intern |
 
+---
 
+# 5. DNS-Eintrag für www.firma.intern erstellen
+
+Pfad:
+
+```text
+Server-Manager
+→ Tools
+→ DNS
+→ Server: DC1
+→ Forward-Lookup-Zone: firma.intern
+
+```
+„Neuer Host (A oder AAAA)“ auswählen
+
+| Einstellung | Wert |
+| --- | --- |
+| Name | www |
+| IP-Adresse | 172.16.10.10 |
+| „Zugehörigen PTR-Eintrag erstellen“ | auswahlen |
 
 ---
 
 # 6. Website starten
 
-Die IIS-Website „Firmenportal“ wird gestartet und für den Zugriff im Netzwerk freigegeben.  
-Der Webdienst läuft anschließend aktiv auf dem Server.
+Im IIS-Manager:  
+`Firmenportal` → Rechtsklick → **„Website starten“**
 
 ---
 
@@ -109,3 +130,5 @@ Die Funktion der Website wird getestet:
 - Zugriff über DNS-Name: `http://www.firma.intern`
 
 Beide Zugriffsarten müssen erfolgreich die Firmenportal-Webseite anzeigen.
+<img width="510" height="407" alt="image" src="https://github.com/user-attachments/assets/96f7c4eb-2cdb-4589-a581-e131e5a72a52" />
+
