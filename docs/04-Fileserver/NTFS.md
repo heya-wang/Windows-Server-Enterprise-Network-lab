@@ -147,6 +147,26 @@ icacls "E:\Homelaufwerk" /remove "Jeder"
 
 Nach Anmeldung:
 
+- Gesamtstruktur Fileserver
+
+ ```text
+E:\
+├── Firmendaten
+│   ├── Geschaeftsfuehrung
+│   ├── Vertrieb
+│   ├── Software
+│   ├── Personal
+│   ├── Controlling
+│   ├── Buchhaltung
+│   └── Empfang
+└── Homelaufwerk
+    ├── user1
+    ├── user2
+    └── user3
+    ├── ......
+
+```
+    
 - Benutzer erhält automatisch Laufwerk P:
 - Pfad wird automatisch aufgelöst zu:
   - Harry Meyer → \\fileserver\Homelaufwerk\harry.meyer
