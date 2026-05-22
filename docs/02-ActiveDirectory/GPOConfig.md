@@ -1,14 +1,14 @@
 # Gruppenrichtlinien (GPO) Konfiguration
 
-## Zweck
+## Ziel
 
-Zur zentralen Verwaltung der Domänenumgebung werden mehrere Gruppenrichtlinienobjekte (GPOs) eingesetzt.
+Zur zentralen Verwaltung der Active-Directory-Domäne werden mehrere Gruppenrichtlinienobjekte (GPOs) eingesetzt.
 
 Die Konfiguration dient der:
 
 - Zentralen Benutzerverwaltung
-- Einschränkung unerwünschter Benutzeraktionen
 - Automatischen Netzlaufwerkszuordnung
+- Einschränkung unerwünschter Benutzeraktionen
 - Erhöhung der Anmeldesicherheit
 - Einheitlichen Client-Konfiguration
 
@@ -16,22 +16,19 @@ Die Konfiguration dient der:
 
 # Verwendete Gruppenrichtlinien
 
-| GPO | Zweck |
-|---|---|
-| Laufwerkszuordnung | Automatische Verbindung von Netzlaufwerken |
-| Herunterfahrencontroll | Einschränkung der Herunterfahren-/Neustartfunktionen |
-| Desktopcontroll | Einschränkung und Konfiguration der Desktopumgebung |
-| Login_Sicherheit | Zusätzliche Sicherheitsrichtlinien für Benutzeranmeldung |
-| Default Domain Policy | Standardrichtlinien der Active Directory Domäne |
-| Default Domain Controllers Policy | Standardrichtlinien für Domänencontroller |
+| Nr. | GPO | Zweck |
+|---|---|---|
+| 1 | Laufwerkszuordnung | Automatische Verbindung von Netzlaufwerken |
+| 2 | Desktopcontroll | Einschränkung lokaler Speicher- und Desktopfunktionen |
+| 3 | Login_Sicherheit | Sicherheitsrichtlinien für Benutzeranmeldung |
+| 4 | Herunterfahrencontroll | Einschränkung von Herunterfahren- und Neustartfunktionen |
 
 ---
-
-# Erstellung und Verwaltung
 
 # Konfigurierte Richtlinien
 
 ## 1. Laufwerkszuordnung
+
 Die Gruppenrichtlinie „Laufwerkszuordnung“ dient zur automatischen Bereitstellung zentraler Netzwerkfreigaben für Domänenbenutzer.
 
 Pfad:
@@ -40,20 +37,13 @@ Pfad:
 Server-Manager
 → Tools
 → Gruppenrichtlinienverwaltung
-→ Domäne firma.intern
 → Gruppenrichtlinienobjekte
 → Neu
-→ Name: Laufwerkszuordnung
-```
-
-Anschließend:
-
-```text
-Rechtsklick auf „Laufwerkszuordnung“
+→ Laufwerkszuordnung
 → Bearbeiten
 ```
 
-Konfiguration im Gruppenrichtlinienverwaltungs-Editor:
+Konfiguration:
 
 ```text
 Benutzerkonfiguration
@@ -65,8 +55,6 @@ Benutzerkonfiguration
 → Zugeordnetes Laufwerk
 ```
 
-Konfiguration:
-
 | Einstellung | Wert |
 |---|---|
 | Aktion | Erstellen |
@@ -75,23 +63,24 @@ Konfiguration:
 | Bezeichnung | Firmendaten |
 | Wiederverbinden | Aktiviert |
 
-Anschließend wird die Gruppenrichtlinie mit der entsprechenden Benutzer-OU verknüpft:
+Verknüpfung der GPO:
 
 ```text
 OU_Benutzer
-→ Rechtsklick
 → Vorhandenes GPO verknüpfen
 → Laufwerkszuordnung
 ```
 
-Zur Validierung werden folgende Tests durchgeführt:
+Validierung:
 
 - Benutzeranmeldung an einem Domänenclient
 - Kontrolle des automatisch verbundenen Netzlaufwerks U:
 - Zugriff auf die Freigabe „Firmendaten“
 - Überprüfung mittels `gpresult /r`
 
-## Desktopcontroll
+---
+
+## 2. Desktopcontroll
 
 Die Gruppenrichtlinie „Desktopcontroll“ dient zur Zentralisierung von Benutzerdaten sowie zur Einschränkung lokaler Speichermöglichkeiten auf Clientsystemen.
 
@@ -106,43 +95,7 @@ Server-Manager
 → Bearbeiten
 ```
 
----
-
-### Ordnerumleitung (Folder Redirection)
-
 Konfiguration:
-
-```text
-Benutzerkonfiguration
-→ Richtlinien
-→ Windows-Einstellungen
-→ Ordnerumleitung
-```
-
-Folgende Benutzerordner werden auf den Fileserver umgeleitet:
-
-- Desktop
-- Dokumente
-
-Einstellungen:
-
-| Einstellung | Wert |
-|---|---|
-| Einstellung | Erweitert – Orte für verschiedene Benutzergruppen bestimmen |
-| Zielordner | In den folgenden Pfad umleiten |
-| Pfad | \\Fileserver\Homelaufwerk$\%username%\Desktop |
-
-Beispiel Dokumente:
-
-```text
-\\Fileserver\Homelaufwerk$\%username%\Dokumente
-```
-
----
-
-### Zugriff auf lokale Laufwerke einschränken
-
-Pfad:
 
 ```text
 Benutzerkonfiguration
@@ -152,22 +105,12 @@ Benutzerkonfiguration
 → Datei-Explorer
 ```
 
-Folgende Richtlinie wird aktiviert:
-
-```text
-Zugriff auf Laufwerke vom Arbeitsplatz verhindern
-```
-
-Konfiguration:
-
-| Einstellung | Wert |
+| Richtlinie | Wert |
 |---|---|
-| Status | Aktiviert |
-| Option | Nur Laufwerk A, B und C einschränken |
+| Zugriff auf Laufwerke vom Arbeitsplatz verhindern | Aktiviert |
+| Einschränkung | Nur Laufwerk A, B und C einschränken |
 
----
-
-### Verknüpfung der GPO
+Verknüpfung der GPO:
 
 ```text
 OU_Benutzer
@@ -175,62 +118,115 @@ OU_Benutzer
 → Desktopcontroll
 ```
 
----
-
-### Validierung
+Validierung:
 
 - Benutzeranmeldung am Domänenclient
 - Desktop und Dokumente werden auf den Fileserver umgeleitet
 - Benutzer kann nicht auf Laufwerk C: zugreifen
 - Überprüfung mittels `gpresult /r`
 
-  
-## Login_Sicherheit
+---
 
-Zweck:
+## 3. Login_Sicherheit
+
+Die Gruppenrichtlinie „Login_Sicherheit“ dient der Absicherung der Benutzeranmeldung innerhalb der Active-Directory-Domäne.
+
+Pfad:
 
 ```text
-Erhöhung der Sicherheit bei der Benutzeranmeldung innerhalb der Domäne.
+Server-Manager
+→ Tools
+→ Gruppenrichtlinienverwaltung
+→ Gruppenrichtlinienobjekte
+→ Login_Sicherheit
+→ Bearbeiten
 ```
 
-Beispiele:
-
-- Sicherheitsrichtlinien
-- Anmeldebeschränkungen
-- Benutzerkontrolle
-
-Konfiguration über:
+Konfiguration:
 
 ```text
 Computerkonfiguration
+→ Richtlinien
 → Windows-Einstellungen
 → Sicherheitseinstellungen
 ```
 
+| Bereich | Einstellung | Wert |
+|---|---|---|
+| Kontorichtlinien → Kennwortrichtlinie | Mindestkennwortlänge | 8 Zeichen |
+| Kontorichtlinien → Kennwortrichtlinie | Kennwort muss Komplexitätsanforderungen entsprechen | Aktiviert |
+| Kontorichtlinien → Kennwortrichtlinie | Maximales Kennwortalter | 90 Tage |
+| Kontorichtlinien → Kennwortrichtlinie | Kennworthistorie erzwingen | 5 Kennwörter |
+| Kontorichtlinien → Kontosperrungsrichtlinie | Kontosperrschwelle | 5 Fehlversuche |
+| Kontorichtlinien → Kontosperrungsrichtlinie | Kontosperrdauer | 15 Minuten |
+| Kontorichtlinien → Kontosperrungsrichtlinie | Kontosperrzähler zurücksetzen nach | 15 Minuten |
+| Lokale Richtlinien → Sicherheitsoptionen | Interaktive Anmeldung: Letzten Benutzernamen nicht anzeigen | Aktiviert |
+| Lokale Richtlinien → Sicherheitsoptionen | STRG+ALT+ENTF erforderlich | Aktiviert |
+| Lokale Richtlinien → Sicherheitsoptionen | Gastkonto Status | Deaktiviert |
+
+Verknüpfung der GPO:
+
+```text
+OU_Computer
+→ Vorhandenes GPO verknüpfen
+→ Login_Sicherheit
+```
+
+Validierung:
+
+- Anmeldung mit Domänenbenutzer testen
+- Falsche Kennworteingaben zur Kontosperrung prüfen
+- Überprüfung mittels `gpresult /r`
+- Kontrolle der angewendeten Sicherheitsrichtlinien auf dem Client
+
 ---
 
-# Gruppenrichtlinien-Verknüpfung
+## 4. Herunterfahrencontroll
 
-Die Gruppenrichtlinien werden mit den entsprechenden Organisationseinheiten (OU) verknüpft.
+Die Gruppenrichtlinie „Herunterfahrencontroll“ dient zur Absicherung von Benutzerkonten gegen wiederholte fehlerhafte Anmeldeversuche.
 
-Beispiele:
+Pfad:
 
-| OU | Zugewiesene GPO |
+```text
+Server-Manager
+→ Tools
+→ Gruppenrichtlinienverwaltung
+→ Gruppenrichtlinienobjekte
+→ Herunterfahrencontroll
+→ Bearbeiten
+```
+
+Konfiguration:
+
+```text
+Computerkonfiguration
+→ Richtlinien
+→ Windows-Einstellungen
+→ Sicherheitseinstellungen
+→ Kontorichtlinien
+→ Kontosperrungsrichtlinie
+```
+
+| Richtlinie | Wert |
 |---|---|
-| OU_Benutzer | Desktopcontroll |
-| OU_Benutzer | Laufwerkszuordnung |
-| OU_Computer | Login_Sicherheit |
+| Kontosperrschwelle | 3 Fehlversuche |
+| Kontosperrdauer | 30 Minuten |
+| Kontosperrzähler zurücksetzen nach | 30 Minuten |
 
----
+Verknüpfung der GPO:
 
-# Überprüfung der Richtlinien
+```text
+OU_Computer
+→ Vorhandenes GPO verknüpfen
+→ Herunterfahrencontroll
+```
 
-Zur Validierung der Gruppenrichtlinien werden folgende Prüfungen durchgeführt:
+Validierung:
 
-- Kontrolle der vorhandenen Gruppenrichtlinien in der Gruppenrichtlinienverwaltung
-- Überprüfung der angewendeten Richtlinien mittels `gpresult /r`
-- Kontrolle der automatischen Netzlaufwerkszuordnung am Client
-- Überprüfung der eingeschränkten Benutzerfunktionen auf Windows-Clients
+- Mehrfache falsche Kennworteingabe testen
+- Benutzerkonto wird nach drei Fehlversuchen gesperrt
+- Anmeldung erst nach 30 Minuten wieder möglich
+- Überprüfung mittels `gpresult /r`
 
 ---
 
@@ -242,20 +238,7 @@ Verwendeter Befehl:
 Get-GPO -All | Select-Object DisplayName, Id, CreationTime, ModificationTime
 ```
 
-Beispielausgabe:
-
-```text
-Laufwerkszuordnung
-Herunterfahrencontroll
-Desktopcontroll
-Login_Sicherheit
-Default Domain Policy
-Default Domain Controllers Policy
-```
-
----
-
-# Verwendete GPOs
+Verwendete GPOs:
 
 ```text
 Laufwerkszuordnung
@@ -275,12 +258,12 @@ GUID: 6640e1a6-9cfe-4963-8552-91dffc4d574d
 
 # Zusammenfassung
 
-Durch den Einsatz zentral verwalteter Gruppenrichtlinien wird die Administration der Windows-Domäne vereinfacht und standardisiert.
+Durch den Einsatz zentral verwalteter Gruppenrichtlinien wird die Administration der Windows-Domäne standardisiert und vereinfacht.
 
-Die GPO-Struktur ermöglicht:
+Die eingesetzten GPOs ermöglichen:
 
 - Einheitliche Clientkonfiguration
 - Zentrale Sicherheitsverwaltung
-- Automatisierte Ressourcenbereitstellung
-- Einschränkung unerwünschter Benutzeraktionen
+- Automatische Netzlaufwerksbereitstellung
+- Einschränkung lokaler Benutzeraktionen
 - Verbesserte Benutzer- und Systemkontrolle
