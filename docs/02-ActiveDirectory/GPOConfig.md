@@ -29,84 +29,162 @@ Die Konfiguration dient der:
 
 # Erstellung und Verwaltung
 
+# Konfigurierte Richtlinien
+
+## 1. Laufwerkszuordnung
+Die Gruppenrichtlinie „Laufwerkszuordnung“ dient zur automatischen Bereitstellung zentraler Netzwerkfreigaben für Domänenbenutzer.
+
 Pfad:
 
 ```text
 Server-Manager
 → Tools
 → Gruppenrichtlinienverwaltung
+→ Domäne firma.intern
+→ Gruppenrichtlinienobjekte
+→ Neu
+→ Name: Laufwerkszuordnung
 ```
 
----
-
-# Konfigurierte Richtlinien
-
-## Laufwerkszuordnung
-
-Zweck:
+Anschließend:
 
 ```text
-Automatische Bereitstellung zentraler Netzwerkfreigaben für Domänenbenutzer.
+Rechtsklick auf „Laufwerkszuordnung“
+→ Bearbeiten
 ```
 
-Beispiel:
-
-```text
-\\Fileserver\Freigaben
-```
-
-Konfiguration über:
+Konfiguration im Gruppenrichtlinienverwaltungs-Editor:
 
 ```text
 Benutzerkonfiguration
 → Einstellungen
 → Windows-Einstellungen
 → Laufwerkszuordnungen
+→ Rechtsklick
+→ Neu
+→ Zugeordnetes Laufwerk
 ```
 
----
+Konfiguration:
 
-## Herunterfahrencontroll
+| Einstellung | Wert |
+|---|---|
+| Aktion | Erstellen |
+| Speicherort | \\Fileserver\Firmendaten |
+| Laufwerksbuchstabe | U: |
+| Bezeichnung | Firmendaten |
+| Wiederverbinden | Aktiviert |
 
-Zweck:
+Anschließend wird die Gruppenrichtlinie mit der entsprechenden Benutzer-OU verknüpft:
 
 ```text
-Verhindert unerwünschtes Herunterfahren oder Neustarten von Clientsystemen durch Standardbenutzer.
+OU_Benutzer
+→ Rechtsklick
+→ Vorhandenes GPO verknüpfen
+→ Laufwerkszuordnung
 ```
 
-Konfiguration über:
+Zur Validierung werden folgende Tests durchgeführt:
 
-```text
-Benutzerkonfiguration
-→ Administrative Vorlagen
-→ Startmenü und Taskleiste
-```
-
----
+- Benutzeranmeldung an einem Domänenclient
+- Kontrolle des automatisch verbundenen Netzlaufwerks U:
+- Zugriff auf die Freigabe „Firmendaten“
+- Überprüfung mittels `gpresult /r`
 
 ## Desktopcontroll
 
-Zweck:
+Die Gruppenrichtlinie „Desktopcontroll“ dient zur Zentralisierung von Benutzerdaten sowie zur Einschränkung lokaler Speichermöglichkeiten auf Clientsystemen.
+
+Pfad:
 
 ```text
-Einschränkung der Desktopumgebung sowie Vereinheitlichung der Benutzeroberfläche.
-```
-
-Beispiele:
-
-- Desktop-Einstellungen
-- Einschränkung von Systemeinstellungen
-- Kontrolle der Benutzeroberfläche
-
-Konfiguration über:
-
-```text
-Benutzerkonfiguration
-→ Administrative Vorlagen
+Server-Manager
+→ Tools
+→ Gruppenrichtlinienverwaltung
+→ Gruppenrichtlinienobjekte
+→ Desktopcontroll
+→ Bearbeiten
 ```
 
 ---
 
+### Ordnerumleitung (Folder Redirection)
+
+Konfiguration:
+
+```text
+Benutzerkonfiguration
+→ Richtlinien
+→ Windows-Einstellungen
+→ Ordnerumleitung
+```
+
+Folgende Benutzerordner werden auf den Fileserver umgeleitet:
+
+- Desktop
+- Dokumente
+
+Einstellungen:
+
+| Einstellung | Wert |
+|---|---|
+| Einstellung | Erweitert – Orte für verschiedene Benutzergruppen bestimmen |
+| Zielordner | In den folgenden Pfad umleiten |
+| Pfad | \\Fileserver\Homelaufwerk$\%username%\Desktop |
+
+Beispiel Dokumente:
+
+```text
+\\Fileserver\Homelaufwerk$\%username%\Dokumente
+```
+
+---
+
+### Zugriff auf lokale Laufwerke einschränken
+
+Pfad:
+
+```text
+Benutzerkonfiguration
+→ Richtlinien
+→ Administrative Vorlagen
+→ Windows-Komponenten
+→ Datei-Explorer
+```
+
+Folgende Richtlinie wird aktiviert:
+
+```text
+Zugriff auf Laufwerke vom Arbeitsplatz verhindern
+```
+
+Konfiguration:
+
+| Einstellung | Wert |
+|---|---|
+| Status | Aktiviert |
+| Option | Nur Laufwerk A, B und C einschränken |
+
+---
+
+### Verknüpfung der GPO
+
+```text
+OU_Benutzer
+→ Vorhandenes GPO verknüpfen
+→ Desktopcontroll
+```
+
+---
+
+### Validierung
+
+- Benutzeranmeldung am Domänenclient
+- Desktop und Dokumente werden auf den Fileserver umgeleitet
+- Benutzer kann nicht auf Laufwerk C: zugreifen
+- Überprüfung mittels `gpresult /r`
+
+  
 ## Login_Sicherheit
 
 Zweck:
