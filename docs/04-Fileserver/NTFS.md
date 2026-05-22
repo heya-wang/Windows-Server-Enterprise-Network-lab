@@ -110,7 +110,7 @@ Active Directory Benutzer und Computer
 
 ## Home-Laufwerk konfigurieren
 
-☑ Home folder  
+Home folder  
 → Connect  
 → Laufwerksbuchstabe: P:  
 → Pfad:  
@@ -163,3 +163,6 @@ Nach Anmeldung:
 
   <img width="718" height="618" alt="image" src="https://github.com/user-attachments/assets/577bbd9d-a59d-4da3-9a24-c405059b1d1e" />
 
+- Nur Mitglieder der jeweiligen DL-Gruppe haben auf den entsprechenden Abteilungsordner Lese- und Schreibrechte (Modify).
+
+  <img width="636" height="541" alt="image" src="https://github.com/user-attachments/assets/cd841a9c-ea50-43b6-a24e-a9f875048ce3" />
