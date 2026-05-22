@@ -96,13 +96,37 @@ Der Server wird anschließend automatisch neu gestartet.
 
 ---
 
-# Validierung
+# Domänenbeitritt der Clients
 
-Die erfolgreiche AD-Installation wird anhand folgender Punkte überprüft:
+Die Windows-Clients werden der Active-Directory-Domäne `firma.intern` hinzugefügt, um zentrale Benutzerverwaltung, DNS-Auflösung und Gruppenrichtlinien zu nutzen.
 
-- Anmeldung an der Domäne möglich (mit "firma\Administrator" und Kennwort)
-- Active Directory Benutzer und Computer verfügbar
-- Domänencontroller erreichbar
+Pfad:
+
+```text
+System
+→ Erweiterte Systemeinstellungen
+→ Computername
+→ Ändern
+```
+
+Konfiguration:
+
+| Einstellung | Wert |
+|---|---|
+| Mitglied von | Domäne |
+| Domäne | firma.intern |
+| Benutzername | firma\Administrator |
+
+Nach erfolgreicher Authentifizierung wird der Client neu gestartet.
+
+---
+
+## Validierung
+
+- Anmeldung mit Domänenbenutzer
+- Kontrolle des Computerkontos in AD
+- DNS-Test mittels `nslookup`
+- Gruppenrichtlinien prüfen mittels `gpresult /r`
 
 ---
 
