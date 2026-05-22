@@ -176,6 +176,10 @@ Implementierte Funktionen:
 - DNS-Integration
 - Redundante Domain Controller
 
+OU-Strucktur:
+
+<img width="1021" height="470" alt="image" src="https://github.com/user-attachments/assets/bc5ebe61-7079-44fc-8a9b-efea685c7b76" />
+
 ---
 
 # Verwendete Technologien
@@ -215,4 +219,7 @@ Der Aufbau orientiert sich an typischen SMB-Umgebungen und dient als praktische 
 - Zentrale Systemverwaltung mit Windows Admin Center (WAC)
 - Grundlegende IT-Sicherheit
 
+---
+
+# Hinweiss
 - Projekt befindet sich in aktiver Weiterentwicklung (nicht produktionsreif)
