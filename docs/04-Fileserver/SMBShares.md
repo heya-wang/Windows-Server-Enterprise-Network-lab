@@ -92,6 +92,17 @@ Freigaben:
 
 # Validierung
 
-<img width="580" height="325" alt="image" src="https://github.com/user-attachments/assets/b2eca8b1-8634-4409-8e65-877d42b600f4" />
+- Firmendaten und Homelaufwerk wurden freigegeben
 
-<img width="636" height="541" alt="image" src="https://github.com/user-attachments/assets/ff8b458e-8d9a-41b5-9af7-bcafc0595476" />
+ <img width="580" height="325" alt="image" src="https://github.com/user-attachments/assets/b2eca8b1-8634-4409-8e65-877d42b600f4" />
+  
+- Zugriff erfolgt über den Datei-Explorer auf \\fileserver\Firmendaten und \\fileserver\Homelaufwerk.
+
+ <img width="673" height="484" alt="image" src="https://github.com/user-attachments/assets/9cfe20d1-7531-4856-943d-93ef985b3f68" />
+  
+- Benutzer sehen im Firmendaten-Ordner nur ihre eigene Abteilung
+    
+
+
+
+
