@@ -30,9 +30,9 @@ Das WAN-Interface verbindet den Router mit dem externen Netzwerk der virtuellen 
 
 | Interface | Netzwerk | IP-Adresse |
 |---|---|---|
-| LAN-Server | 172.16.1.0/24 | 172.16.1.1 |
-| LAN-DMZ | 172.16.10.0/24 | 172.16.10.1 |
-| LAN-Clients | 172.16.20.0/24 | 172.16.20.1 |
+| Servernetz | 172.16.1.0/24 | 172.16.1.1 |
+| DMZ | 172.16.10.0/24 | 172.16.10.1 |
+| Benutzernetz | 172.16.20.0/24 | 172.16.20.1 |
 
 ---
 
@@ -148,8 +148,8 @@ Im DHCP Relay Agent wird der zentrale DHCP-Server eingetragen:
 
 DHCP Relay wird auf folgenden Interfaces aktiviert:
 
-- LAN-DMZ
-- LAN-Clients
+- DMZ
+- Benutzernetz
 
 Optional:
 
@@ -177,7 +177,7 @@ Die Extern-Schnittstelle wird als:
 
 konfiguriert.
 
-Die internen Netzwerke (LAN, DMZ und VPN) verwenden den ROUTER anschließend als Gateway für externe Verbindungen.
+Die internen Netzwerke (Servernetz, DMZ und VPN-netz) verwenden den ROUTER anschließend als Gateway für externe Verbindungen.
 
 Die Netzwerke sind logisch voneinander getrennt und kommunizieren ausschließlich über den zentralen Router.
 
@@ -189,8 +189,8 @@ Die Netzwerke sind logisch voneinander getrennt und kommunizieren ausschließlic
 
 Beispiel:
 
-- Client → DC1
-- Client → Fileserver
+- CL1 → DC1
+- CL1 → Fileserver
 - DMZ → Router
 
 ## DHCP testen
