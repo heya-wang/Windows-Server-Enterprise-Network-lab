@@ -6,6 +6,8 @@ Der Server „DHCPserver“ stellt die automatische IPv4-Adressvergabe für das 
 
 Da sich der DHCP-Server in einem anderen Netzwerksegment befindet, erfolgt die Weiterleitung der DHCP-Anfragen über den ROUTER als DHCP-Relay-Agent.
 
+DHCP-Relay auf dem ROUTER ist schon configuriert.
+
 ---
 
 # DHCP-Server Installation
@@ -63,72 +65,15 @@ DHCP
 
 | Einstellung | Wert |
 |---|---|
-| Bereichsname | LAN20 |
+| Bereichsname | Benutzernetz |
 | Netzwerk | 172.16.20.0 |
 | Subnetzmaske | 255.255.255.0 |
-| Adressbereich | 172.16.20.100 – 172.16.20.200 |
+| Adressbereich | 172.16.20.10 – 172.16.20.100 |
 | Ausschlussbereich | Optional |
 | Lease-Dauer | Standard |
 
 ---
 
-## DHCP-Optionen
-
-| Option | Wert |
-|---|---|
-| Router (Gateway) | 172.16.20.1 |
-| DNS-Server | 172.16.1.10 |
-| DNS-Domäne | firma.intern |
-
----
-
-# DHCP-Relay auf dem ROUTER
-
-Da sich der DHCP-Server nicht im gleichen Broadcast-Domain wie die Clients befindet, wird ein DHCP-Relay-Agent auf dem ROUTER konfiguriert.
-
-Pfad:
-
-```text
-Routing und RAS
-→ IPv4
-→ Allgemein
-→ Rechtsklick auf LAN20-Schnittstelle
-→ Eigenschaften
-```
-
-DHCP-Relay-Agent hinzufügen:
-
-```text
-IPv4
-→ Allgemein
-→ Neues Routingprotokoll
-→ DHCP-Relay-Agent
-```
-
-DHCP-Server hinzufügen:
-
-```text
-DHCP-Relay-Agent
-→ Rechtsklick
-→ Neuer Server
-→ 172.16.1.13
-```
-
-Anschließend die Schnittstelle konfigurieren:
-
-```text
-DHCP-Relay-Agent
-→ Rechtsklick auf LAN20-Schnittstelle
-→ Eigenschaften
-```
-
-| Einstellung | Wert |
-|---|---|
-| DHCP-Server-Adresse | 172.16.1.13 |
-| Hop-Count-Schwelle | Standard |
-| Boot-Threshold | Standard |
-
----
 
 # Validierung
 
