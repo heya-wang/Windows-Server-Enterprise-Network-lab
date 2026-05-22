@@ -1,8 +1,6 @@
 # NTFS-Berechtigungen auf dem Fileserver
 
-## Ziel
-
-Die NTFS-Berechtigungen werden so konfiguriert, dass:
+Ziel: Die NTFS-Berechtigungen werden so konfiguriert, dass
 
 - jeder Benutzer nur auf seinen eigenen Bereich zugreifen kann
 - Abteilungsordner nur über die jeweiligen DL-Gruppen zugänglich sind
@@ -98,6 +96,28 @@ foreach ($abt in $abteilungen)
 
 # Homelaufwerk (Benutzerverzeichnisse)
 
+## AD Benutzerzuordnung 
+
+Diese Konfiguration erfolgt pro Benutzer im Active Directory (GUI):
+
+Active Directory Benutzer und Computer  
+→ OU_Benutzer (z. B. OU_Buchhaltung → OU_Benutzer)  
+→ Benutzer auswählen (z. B. Harry Meyer)  
+→ Eigenschaften  
+→ Registerkarte: Profil  
+
+---
+
+## Home-Laufwerk konfigurieren
+
+☑ Home folder  
+→ Connect  
+→ Laufwerksbuchstabe: P:  
+→ Pfad:  
+\\fileserver\Homelaufwerk\%username%
+
+## Berechtigungen
+
 Pfad:
 
 ```text
@@ -123,16 +143,23 @@ icacls "E:\Homelaufwerk" /remove "Jeder"
 
 ---
 
+## Ergebnis
+
+Nach Anmeldung:
+
+- Benutzer erhält automatisch Laufwerk P:
+- Pfad wird automatisch aufgelöst zu:
+  - Harry Meyer → \\fileserver\Homelaufwerk\harry.meyer
+- Ordner wird automatisch auf dem Fileserver erstellt (falls Rechte korrekt gesetzt)
+---
+
 # Validierung
 
 - Zugriffstest mit Domänenbenutzer
 - Prüfung:
   - Zugriff nur auf eigene Abteilung
   - Zugriff auf fremde Abteilungen verweigert
-- Kontrolle mit:
+- Vollzugriff auf eigene Laufwerk
 
-```powershell
-icacls E:\Firmendaten\Vertrieb
-```
+  <img width="718" height="618" alt="image" src="https://github.com/user-attachments/assets/577bbd9d-a59d-4da3-9a24-c405059b1d1e" />
 
-- Test eines Benutzer-Homelaufwerks nach Anmeldung
