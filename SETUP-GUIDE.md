@@ -88,15 +88,15 @@ Dynamischer Arbeitsspeicher wird für Clients verwendet.
 
 | VM | Netzwerk |
 |---|---|
-| DC1 | `Privat-Servers` |
-| DC2 | `Privat-Servers` |
-| Fileserver | `Privat-Servers` |
-| DHCPServer | `Privat-Servers` |
-| Zabbix | `Privat-Servers` |
-| Webserver | `Privat-DMZ` |
-| Proxy | `Privat-DMZ` |
-| CL1 | `Privat-Users` |
-| CL2 | `Privat-Users` |
+| DC1 | `Benutzernetz` |
+| DC2 | `Benutzernetz` |
+| Fileserver | `Servernetz` |
+| DHCPServer | `Servernetz` |
+| Zabbix | `Servernetz` |
+| Webserver | `DMZ` |
+| Proxy | `DMZ` |
+| CL1 | `Benutzernetz` |
+| CL2 | `Benutzernetz` |
 
 ---
 
